@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../../utils/socket';
-import { fetchOrders, fetchAdminOrderById, clearCurrentOrder, updateAdminOrderStatus } from '../../redux/slices/orderSlice';
+import { fetchAllOrders, fetchAdminOrderById, clearCurrentOrder, updateAdminOrderStatus } from '../../redux/slices/orderSlice';
 import { FiEye, FiCheckCircle, FiXCircle, FiTruck, FiClock } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
@@ -31,12 +31,12 @@ const AdminOrders = () => {
     const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
-        dispatch(fetchOrders());
+        dispatch(fetchAllOrders());
     }, [dispatch]);
 
     useEffect(() => {
         socket.on('orderCreated', () => {
-            dispatch(fetchOrders());
+            dispatch(fetchAllOrders());
         });
         return () => {
             socket.off('orderCreated');
