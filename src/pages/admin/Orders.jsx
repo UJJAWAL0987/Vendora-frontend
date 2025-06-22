@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../../utils/socket';
-import { fetchAllOrders, fetchAdminOrderById, clearCurrentOrder, updateAdminOrderStatus } from '../../redux/slices/orderSlice';
+import { fetchAllOrders, fetchAdminOrderById, clearCurrentOrder, updateOrderStatusAdmin } from '../../redux/slices/orderSlice';
 import { FiEye, FiCheckCircle, FiXCircle, FiTruck, FiClock } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
@@ -64,7 +64,7 @@ const AdminOrders = () => {
         if (!statusToUpdate) return;
         setUpdating(true);
         try {
-            await dispatch(updateAdminOrderStatus({ orderId: currentOrder._id, orderStatus: statusToUpdate })).unwrap();
+            await dispatch(updateOrderStatusAdmin({ orderId: currentOrder._id, orderStatus: statusToUpdate })).unwrap();
             toast.success('Order status updated');
             setStatusToUpdate('');
         } catch (err) {
