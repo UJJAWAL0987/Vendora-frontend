@@ -6,7 +6,7 @@ export const createOrder = createAsyncThunk(
   'orders/createOrder',
   async (orderData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/orders', orderData);
+      const response = await api.post('/orders', orderData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to create order');
@@ -25,7 +25,7 @@ export const fetchMyOrders = createAsyncThunk(
         }
       });
       
-      const response = await api.get(`/api/orders/my-orders?${queryParams}`);
+      const response = await api.get(`/orders/my-orders?${queryParams}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch orders');
@@ -37,7 +37,7 @@ export const fetchOrderById = createAsyncThunk(
   'orders/fetchOrderById',
   async (orderId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/api/orders/my-orders/${orderId}`);
+      const response = await api.get(`/orders/my-orders/${orderId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch order');
@@ -49,7 +49,7 @@ export const cancelOrder = createAsyncThunk(
   'orders/cancelOrder',
   async (orderId, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/orders/my-orders/${orderId}/cancel`, {});
+      const response = await api.put(`/orders/my-orders/${orderId}/cancel`, {});
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to cancel order');
@@ -57,7 +57,7 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
-// Vendor order management
+// Vendor actions
 export const fetchVendorOrders = createAsyncThunk(
   'orders/fetchVendorOrders',
   async (params = {}, { rejectWithValue }) => {
@@ -69,7 +69,7 @@ export const fetchVendorOrders = createAsyncThunk(
         }
       });
       
-      const response = await api.get(`/api/orders/vendor/orders?${queryParams}`);
+      const response = await api.get(`/orders/vendor/orders?${queryParams}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendor orders');
@@ -81,7 +81,7 @@ export const updateOrderStatus = createAsyncThunk(
   'orders/updateOrderStatus',
   async ({ orderId, statusData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/orders/vendor/orders/${orderId}/status`, statusData);
+      const response = await api.put(`/orders/vendor/orders/${orderId}/status`, statusData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to update order status');
@@ -93,7 +93,7 @@ export const fetchVendorStats = createAsyncThunk(
   'orders/fetchVendorStats',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/api/orders/vendor/stats');
+      const response = await api.get('/orders/vendor/stats');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendor stats');
@@ -101,8 +101,9 @@ export const fetchVendorStats = createAsyncThunk(
   }
 );
 
-export const fetchOrders = createAsyncThunk(
-  'orders/fetchOrders',
+// Admin actions
+export const fetchAllOrders = createAsyncThunk(
+  'orders/fetchAllOrders',
   async (params = {}, { rejectWithValue }) => {
     try {
       const queryParams = new URLSearchParams();
@@ -111,10 +112,11 @@ export const fetchOrders = createAsyncThunk(
           queryParams.append(key, params[key]);
         }
       });
-      const response = await api.get(`/api/admin/orders?${queryParams}`);
+      
+      const response = await api.get(`/admin/orders?${queryParams}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to fetch orders');
+      return rejectWithValue(error.response?.data || 'Failed to fetch all orders');
     }
   }
 );
@@ -123,7 +125,7 @@ export const fetchAdminOrderById = createAsyncThunk(
   'orders/fetchAdminOrderById',
   async (orderId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/api/admin/orders/${orderId}`);
+      const response = await api.get(`/admin/orders/${orderId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch order');
@@ -131,11 +133,11 @@ export const fetchAdminOrderById = createAsyncThunk(
   }
 );
 
-export const updateAdminOrderStatus = createAsyncThunk(
-  'orders/updateAdminOrderStatus',
+export const updateOrderStatusAdmin = createAsyncThunk(
+  'orders/updateOrderStatusAdmin',
   async ({ orderId, orderStatus }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/admin/orders/${orderId}/status`, { orderStatus });
+      const response = await api.put(`/admin/orders/${orderId}/status`, { orderStatus });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to update order status');
@@ -274,16 +276,16 @@ const orderSlice = createSlice({
         state.error = action.payload;
       })
       // Fetch All Orders (Admin)
-      .addCase(fetchOrders.pending, (state) => {
+      .addCase(fetchAllOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload.data;
         state.pagination = action.payload.pagination;
       })
-      .addCase(fetchOrders.rejected, (state, action) => {
+      .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -301,18 +303,18 @@ const orderSlice = createSlice({
         state.error = action.payload;
       })
       // Update Admin Order Status
-      .addCase(updateAdminOrderStatus.pending, (state) => {
+      .addCase(updateOrderStatusAdmin.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateAdminOrderStatus.fulfilled, (state, action) => {
+      .addCase(updateOrderStatusAdmin.fulfilled, (state, action) => {
         state.loading = false;
         state.currentOrder = action.payload.data;
         // Update in orders list if present
         const idx = state.orders.findIndex(o => o._id === action.payload.data._id);
         if (idx !== -1) state.orders[idx] = action.payload.data;
       })
-      .addCase(updateAdminOrderStatus.rejected, (state, action) => {
+      .addCase(updateOrderStatusAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

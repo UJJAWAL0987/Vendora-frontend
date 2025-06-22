@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
 import { fetchProducts } from '../../redux/slices/productSlice';
 import { FiShoppingBag, FiStar, FiTruck, FiShield, FiHeadphones, FiHeart, FiSearch } from 'react-icons/fi';
+import { testApiConnection, testProductsEndpoint } from '../../utils/testApi';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -103,6 +104,18 @@ const Home = () => {
             <div className="container mx-auto p-4">
                 <div className="text-center text-red-600">
                     Error loading products: {error}
+                    <div className="mt-4">
+                        <button
+                            onClick={async () => {
+                                console.log('Testing API connection...');
+                                await testApiConnection();
+                                await testProductsEndpoint();
+                            }}
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        >
+                            Test API Connection
+                        </button>
+                    </div>
                 </div>
             </div>
         );

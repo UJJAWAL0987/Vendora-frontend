@@ -6,7 +6,7 @@ export const fetchVendors = createAsyncThunk(
   'vendors/fetchVendors',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/api/vendors');
+      const response = await api.get('/vendors');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendors');
@@ -19,7 +19,7 @@ export const updateVendorStatus = createAsyncThunk(
   'vendors/updateVendorStatus',
   async ({ id, isActive }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/vendors/${id}/status`, { isActive });
+      const response = await api.put(`/vendors/${id}/status`, { isActive });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to update vendor status');

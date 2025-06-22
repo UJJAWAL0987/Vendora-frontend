@@ -6,7 +6,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/auth/register', userData);
+      const response = await api.post('/auth/register', userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Registration failed');
@@ -18,7 +18,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/auth/login', credentials);
+      const response = await api.post('/auth/login', credentials);
       // Store token in localStorage
       localStorage.setItem('token', response.data.data.token);
       return response.data;
@@ -30,18 +30,13 @@ export const login = createAsyncThunk(
 
 export const getCurrentUser = createAsyncThunk(
   'auth/getCurrentUser',
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No token found');
-      }
-      
-      const response = await api.get('/api/auth/me');
+      const response = await api.get('/auth/me');
       return response.data;
     } catch (error) {
       localStorage.removeItem('token');
-      return rejectWithValue(error.response?.data || 'Failed to get user');
+      return rejectWithValue(error.response?.data || 'Failed to get user data');
     }
   }
 );
@@ -50,10 +45,10 @@ export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (profileData, { rejectWithValue }) => {
     try {
-      const response = await api.put('/api/auth/profile', profileData);
+      const response = await api.put('/auth/profile', profileData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Profile update failed');
+      return rejectWithValue(error.response?.data || 'Failed to update profile');
     }
   }
 );
@@ -62,10 +57,10 @@ export const changePassword = createAsyncThunk(
   'auth/changePassword',
   async (passwordData, { rejectWithValue }) => {
     try {
-      const response = await api.put('/api/auth/change-password', passwordData);
+      const response = await api.put('/auth/change-password', passwordData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Password change failed');
+      return rejectWithValue(error.response?.data || 'Failed to change password');
     }
   }
 );
@@ -74,15 +69,12 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        await api.post('/api/auth/logout', {});
-      }
+      await api.post('/auth/logout', {});
       localStorage.removeItem('token');
       return null;
     } catch (error) {
       localStorage.removeItem('token');
-      return rejectWithValue('Logout failed');
+      return rejectWithValue(error.response?.data || 'Logout failed');
     }
   }
 );

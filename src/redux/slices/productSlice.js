@@ -13,7 +13,7 @@ export const fetchProducts = createAsyncThunk(
         }
       });
       
-      const response = await api.get(`/api/products?${queryParams}`);
+      const response = await api.get(`/products?${queryParams}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch products');
@@ -25,7 +25,7 @@ export const fetchProductById = createAsyncThunk(
   'products/fetchProductById',
   async (productId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/api/products/${productId}`);
+      const response = await api.get(`/products/${productId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch product');
@@ -37,7 +37,7 @@ export const fetchProductCategories = createAsyncThunk(
   'products/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/api/products/categories/list');
+      const response = await api.get('/products/categories/list');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch categories');
@@ -49,7 +49,7 @@ export const createProduct = createAsyncThunk(
   'products/createProduct',
   async (productData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/products', productData);
+      const response = await api.post('/products', productData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to create product');
@@ -61,7 +61,7 @@ export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async ({ productId, productData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/products/${productId}`, productData);
+      const response = await api.put(`/products/${productId}`, productData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to update product');
@@ -73,7 +73,7 @@ export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (productId, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/products/${productId}`);
+      await api.delete(`/products/${productId}`);
       return productId;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to delete product');
@@ -92,7 +92,7 @@ export const fetchVendorProducts = createAsyncThunk(
         }
       });
       
-      const response = await api.get(`/api/products/vendor/my-products?${queryParams}`);
+      const response = await api.get(`/products/vendor/my-products?${queryParams}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendor products');
@@ -104,7 +104,7 @@ export const addProductReview = createAsyncThunk(
   'products/addReview',
   async ({ productId, reviewData }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/api/products/${productId}/reviews`, reviewData);
+      const response = await api.post(`/products/${productId}/reviews`, reviewData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to add review');
@@ -124,7 +124,7 @@ export const fetchAllProducts = createAsyncThunk(
         }
       });
       
-      const response = await api.get(`/api/admin/products?${queryParams}`);
+      const response = await api.get(`/admin/products?${queryParams}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch all products');
@@ -136,7 +136,7 @@ export const updateProductStatus = createAsyncThunk(
   'products/updateProductStatus',
   async ({ productId, status }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/admin/products/${productId}/status`, { status });
+      const response = await api.put(`/admin/products/${productId}/status`, { status });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to update product status');
